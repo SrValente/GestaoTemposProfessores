@@ -7,8 +7,8 @@ from typing import List
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-USERNAME = "p_heflo"
-PASSWORD = "Q0)G$sW]rj"
+USERNAME = st.secrets["USERNAME"]
+PASSWORD = st.secrets["PASSWORD"]
 BASE_URL = "https://raizeducacao160286.rm.cloudtotvs.com.br:8051/api/framework/v1/consultaSQLServer/RealizaConsulta"
 SQL_ID_HORARIOS = "SMP.0023"
 SQL_ID_LISTA_PROFESSORES = "SMP.0024"

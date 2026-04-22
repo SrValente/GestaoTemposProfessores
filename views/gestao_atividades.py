@@ -9,8 +9,8 @@ import io
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-USERNAME = "p_heflo" 
-PASSWORD = "Q0)G$sW]rj"
+USERNAME = st.secrets["USERNAME"]
+PASSWORD = st.secrets["PASSWORD"]
 SOAP_URL = "https://raizeducacao160286.rm.cloudtotvs.com.br:8051/wsDataServer/IwsDataServer"
 
 ATIVIDADES_MAP = {
