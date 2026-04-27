@@ -3,9 +3,10 @@ from streamlit_option_menu import option_menu
 import views.gestao_enturmacao as enturmacao
 import views.grade_horaria as grade
 import views.gestao_atividades as atividades
+import views.consulta_atividades as consulta_atividades
 
 # Configuração da página inicial (deve ser a primeira chamada)
-st.set_page_config(page_title="Portal de Gestão de Tempos", layout="wide", page_icon="🎓")
+st.set_page_config(page_title="Portal Mestre Educacional", layout="wide", page_icon="🎓")
 
 # Estilização Global CSS
 st.markdown("""
@@ -94,7 +95,7 @@ if not st.session_state.authenticated:
         st.markdown('''
         <div class="login-box">
             <div style="font-size: 50px; margin-bottom: 15px;">🚀</div>
-            <h2 style="color: #818cf8; margin-bottom: 10px; font-weight: 700;">Gestão de Tempos</h2>
+            <h2 style="color: #818cf8; margin-bottom: 10px; font-weight: 700;">Portal Mestre</h2>
             <p style="color: #94a3b8; margin-bottom: 35px; font-size: 15px;">Acesso restrito ao corpo de Coordenação</p>
         </div>
         ''', unsafe_allow_html=True)
@@ -120,8 +121,8 @@ with st.sidebar:
     
     selecao = option_menu(
         menu_title=None,
-        options=["Gestão de Enturmação", "Grade Horária", "Atividades Extras"],
-        icons=["people-fill", "calendar-week-fill", "journal-plus"],
+        options=["Gestão de Enturmação", "Grade Horária", "Atividades Extras", "Consulta de Atividades"],
+        icons=["people-fill", "calendar-week-fill", "journal-plus", "search"],
         menu_icon="cast",
         default_index=0,
         styles={
@@ -144,3 +145,5 @@ elif selecao == "Grade Horária":
     grade.show()
 elif selecao == "Atividades Extras":
     atividades.show()
+elif selecao == "Consulta de Atividades":
+    consulta_atividades.show()
