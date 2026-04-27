@@ -95,6 +95,10 @@ def show():
                         if col in df_atividades.columns:
                             df_atividades[col] = pd.to_numeric(df_atividades[col].astype(str).str.replace(',', '.'), errors='coerce').fillna(0)
 
+                    for col in ['DTINICIO', 'DTTERMINO']:
+                        if col in df_atividades.columns:
+                            df_atividades[col] = pd.to_datetime(df_atividades[col], errors='coerce').dt.strftime('%d/%m/%Y')
+
                     # Colunas para exibir
                     colunas_exibicao = ['IDATIVIDADEPROF', 'NOME', 'CODPROF', 'DESCRICAO', 'CARGAHORARIA', 'VALORHORA', 'DTINICIO', 'DTTERMINO', 'CODFILIAL', 'STATUS']
                     colunas_disponiveis = [c for c in colunas_exibicao if c in df_atividades.columns]
