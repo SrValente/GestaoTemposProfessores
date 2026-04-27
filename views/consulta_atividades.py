@@ -99,8 +99,25 @@ def show():
                         if col in df_atividades.columns:
                             df_atividades[col] = pd.to_datetime(df_atividades[col], errors='coerce').dt.strftime('%d/%m/%Y')
 
+                    # Mapear IDATIVIDADEEXTRA para o nome real
+                    from views.gestao_atividades import ATIVIDADES_MAP
+                    mapa_invertido = {}
+                    for cat, itens in ATIVIDADES_MAP.items():
+                        for nome, id_val in itens.items():
+                            # Limpar a string e pegar a categoria (ou manter completo, fica a seu critério)
+                            # O usuário mencionou que as faltas são na verdade "saídas", então manter
+                            # a string completa já atende.
+                            mapa_invertido[str(id_val)] = f"[{cat}] {nome}"
+
+                    if 'IDATIVIDADEEXTRA' in df_atividades.columns:
+                        # Assegurar formato string limpo para não ocorrer ".0"
+                        df_atividades['IDATIVIDADEEXTRA_STR'] = pd.to_numeric(df_atividades['IDATIVIDADEEXTRA'], errors='coerce').astype('Int64').astype(str)
+                        df_atividades['TIPO_ATIVIDADE'] = df_atividades['IDATIVIDADEEXTRA_STR'].map(mapa_invertido).fillna(df_atividades['IDATIVIDADEEXTRA_STR'])
+                    else:
+                        df_atividades['TIPO_ATIVIDADE'] = '-'
+
                     # Colunas para exibir
-                    colunas_exibicao = ['IDATIVIDADEPROF', 'NOME', 'CODPROF', 'DESCRICAO', 'CARGAHORARIA', 'VALORHORA', 'DTINICIO', 'DTTERMINO', 'CODFILIAL', 'STATUS']
+                    colunas_exibicao = ['IDATIVIDADEPROF', 'NOME', 'CODPROF', 'TIPO_ATIVIDADE', 'DESCRICAO', 'CARGAHORARIA', 'VALORHORA', 'DTINICIO', 'DTTERMINO', 'CODFILIAL', 'STATUS']
                     colunas_disponiveis = [c for c in colunas_exibicao if c in df_atividades.columns]
                     
                     st.success(f"✅ {len(df_atividades)} registros encontrados!")
