@@ -12,6 +12,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 USERNAME = st.secrets["USERNAME"]
 PASSWORD = st.secrets["PASSWORD"]
 SOAP_URL = "https://raizeducacao160286.rm.cloudtotvs.com.br:8051/wsDataServer/IwsDataServer"
+BASE_URL = "https://raizeducacao160286.rm.cloudtotvs.com.br:8051/api/framework/v1/consultaSQLServer/RealizaConsulta"
 
 ATIVIDADES_MAP = {
     "REUNIÕES": {
@@ -45,6 +46,21 @@ ATIVIDADES_MAP = {
         "217 - JANELA EM 3ª": 217, "218 - JANELA PRE VEST": 218,
     }
 }
+
+def consultar_rm(sentenca, parametros=""):
+    url = f"{BASE_URL}/{sentenca}/0/S"
+    try:
+        params = {"parameters": parametros} if parametros else {}
+        resp = requests.get(url, auth=HTTPBasicAuth(USERNAME, PASSWORD), params=params, verify=False, timeout=20)
+        return pd.DataFrame(resp.json()) if resp.status_code == 200 else pd.DataFrame()
+    except: return pd.DataFrame()
+
+@st.cache_data(ttl=600)
+def carregar_professores():
+    df = consultar_rm("SMP.0060")
+    if not df.empty:
+        df['LABEL_PROF'] = df['NOME'] + " (" + df['CODPROF'].astype(str) + ")"
+    return df
 
 def formatar_decimal_totvs(valor):
     try: return "{:.2f}".format(float(valor)).replace('.', ',')
@@ -121,6 +137,8 @@ def show():
     tab_cadastro, tab_lote, tab_consulta = st.tabs(["➕ Novo Lançamento", "🚀 Lote via Planilha", "🔍 Consultar"])
 
     with tab_cadastro:
+        df_lista_prof = carregar_professores()
+
         filiais = obter_filiais()
         nome_filial_sel = st.selectbox("🏫 Unidade/Filial:", [f["NOMEFANTASIA"] for f in filiais], key="filial_u")
         
@@ -129,9 +147,12 @@ def show():
         ativ_sel = col_c2.selectbox("📝 Atividade:", list(ATIVIDADES_MAP[cat_sel].keys()), key="ativ_u")
         
         with st.form("form_unico"):
-            chapa = st.text_input("Chapa do Professor (CODPROF)", placeholder="Ex: 1355")
+            if not df_lista_prof.empty:
+                prof_selecionado = st.selectbox("Selecione o Professor", sorted(df_lista_prof['LABEL_PROF'].unique()), index=None)
+            else:
+                chapa_input = st.text_input("Chapa do Professor (CODPROF)", placeholder="Ex: 1355")
             
-            f1, f2, f3, f4 = st.columns(4)
+            f1, f2, f3, f4 = st. columns(4)
             c_horaria = f1.number_input("Carga Horária", value=1.0, step=0.5, format="%.2f")
             v_hora = f2.number_input("Valor Hora", value=0.0, step=1.0, format="%.2f")
             remunera = f3.selectbox("Remunerada?", ["Sim", "Não"])
@@ -144,8 +165,15 @@ def show():
             obs = st.text_area("Descrição/Observações")
             
             if st.form_submit_button("🚀 Enviar para o RM", use_container_width=True):
+                chapa = None
+                if not df_lista_prof.empty:
+                    if prof_selecionado:
+                        chapa = prof_selecionado.split("(")[-1].replace(")", "").strip()
+                else:
+                    chapa = chapa_input.strip() if chapa_input else None
+
                 if not chapa:
-                    st.warning("⚠️ Informe a chapa do professor.")
+                    st.warning("⚠️ Informe o professor.")
                 else:
                     f_info = next(f for f in filiais if f["NOMEFANTASIA"] == nome_filial_sel)
                     id_ext = ATIVIDADES_MAP[cat_sel][ativ_sel]
