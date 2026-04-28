@@ -31,7 +31,7 @@ def carregar_professores():
 
 def show():
     st.title("📊 Consulta Geral de Atividades")
-    st.markdown("<p style='color: #94a3b8;'>Consulte atividades extras lançadas, filtre por mês, visualize relatórios gerais ou refine a busca por professor.</p>", unsafe_allow_html=True)
+    st.markdown("<p style='color: var(--text-color); opacity: 0.8;'>Consulte atividades extras lançadas, filtre por mês, visualize relatórios gerais ou refine a busca por professor.</p>", unsafe_allow_html=True)
     st.markdown("---")
 
     # Carregar professores para o select
