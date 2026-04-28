@@ -80,8 +80,8 @@ if not st.session_state.authenticated:
         st.markdown('''
         <div class="login-box">
             <div style="font-size: 50px; margin-bottom: 15px;">🚀</div>
-            <h2 style="color: #818cf8; margin-bottom: 10px; font-weight: 700;">Portal Mestre</h2>
-            <p style="color: #94a3b8; margin-bottom: 35px; font-size: 15px;">Acesso restrito ao corpo de Coordenação</p>
+            <h2 style="color: var(--primary-color); margin-bottom: 10px; font-weight: 700;">Portal Mestre</h2>
+            <p style="color: var(--text-color); opacity: 0.8; margin-bottom: 35px; font-size: 15px;">Acesso restrito ao corpo de Coordenação</p>
         </div>
         ''', unsafe_allow_html=True)
         
@@ -101,8 +101,8 @@ if not st.session_state.authenticated:
 
 # Área após Autenticação
 with st.sidebar:
-    st.markdown("<h2 style='text-align: center; color: #818cf8; margin-top: 20px;'>Menu Principal</h2>", unsafe_allow_html=True)
-    st.markdown("<hr style='border-color: rgba(255,255,255,0.1);'>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center; color: var(--primary-color); margin-top: 20px;'>Menu Principal</h2>", unsafe_allow_html=True)
+    st.markdown("<hr style='border-color: rgba(128,128,128,0.2);'>", unsafe_allow_html=True)
     
     selecao = option_menu(
         menu_title=None,
@@ -112,9 +112,9 @@ with st.sidebar:
         default_index=0,
         styles={
             "container": {"padding": "0!important", "background-color": "transparent"},
-            "icon": {"color": "#818cf8", "font-size": "18px"}, 
-            "nav-link": {"font-size": "15px", "text-align": "left", "margin":"5px", "--hover-color": "rgba(255,255,255,0.1)", "color": "#e2e8f0"},
-            "nav-link-selected": {"background-color": "#4f46e5", "color": "white", "font-weight": "bold"},
+            "icon": {"color": "var(--primary-color)", "font-size": "18px"}, 
+            "nav-link": {"font-size": "15px", "text-align": "left", "margin":"5px", "--hover-color": "rgba(128,128,128,0.1)", "color": "var(--text-color)"},
+            "nav-link-selected": {"background-color": "var(--primary-color)", "color": "white", "font-weight": "bold"},
         }
     )
     
