@@ -131,7 +131,7 @@ def gerar_template_excel():
 
 def show():
     st.title("👨‍🏫 Gestão de Atividades do Professor")
-    st.markdown("<p style='color: #94a3b8;'>Gerencie o lançamento de atividades extras, faltas, reuniões e substituições para o corpo docente.</p>", unsafe_allow_html=True)
+    st.markdown("<p style='color: var(--text-color); opacity: 0.8;'>Gerencie o lançamento de atividades extras, faltas, reuniões e substituições para o corpo docente.</p>", unsafe_allow_html=True)
     st.markdown("---")
 
     tab_cadastro, tab_lote, tab_consulta = st.tabs(["➕ Novo Lançamento", "🚀 Lote via Planilha", "🔍 Consultar"])
