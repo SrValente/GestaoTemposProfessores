@@ -44,7 +44,7 @@ def carregar_listas():
 
 def show():
     st.title("🎓 Gestão de Enturmação Express")
-    st.markdown("<p style='color: #94a3b8;'>Preencha as informações para a substituição ou enturmação de professores nas disciplinas.</p>", unsafe_allow_html=True)
+    st.markdown("<p style='color: var(--text-color); opacity: 0.8;'>Preencha as informações para a substituição ou enturmação de professores nas disciplinas.</p>", unsafe_allow_html=True)
     st.markdown("---")
     
     with st.spinner("Carregando Dados..."):
