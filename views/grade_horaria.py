@@ -87,7 +87,7 @@ def consultar_horarios(nome: str) -> pd.DataFrame:
 
 def show():
     st.title("📅 Quadro de Horários do Professor")
-    st.markdown("<p style='color: #94a3b8;'>Visualize e exporte a grade horária de qualquer professor da rede.</p>", unsafe_allow_html=True)
+    st.markdown("<p style='color: var(--text-color); opacity: 0.8;'>Visualize e exporte a grade horária de qualquer professor da rede.</p>", unsafe_allow_html=True)
     st.markdown("---")
 
     with st.spinner("Carregando lista de professores..."):
