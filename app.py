@@ -11,33 +11,19 @@ st.set_page_config(page_title="Portal Mestre Educacional", layout="wide", page_i
 # Estilização Global CSS
 st.markdown("""
 <style>
-/* Estilo moderno, limpo, focado com paleta elegante */
-[data-testid="stAppViewContainer"] {
-    background: linear-gradient(145deg, #0f172a 0%, #1e1b4b 100%);
-    color: white;
-}
-[data-testid="stSidebar"] {
-    background: rgba(15, 23, 42, 0.85) !important;
-    backdrop-filter: blur(12px);
-    border-right: 1px solid rgba(255, 255, 255, 0.05);
-}
-h1, h2, h3, h4, p, span {
-    color: #f1f5f9;
-}
-/* Login component styling */
+/* Estilo moderno adaptável ao tema light e dark do Streamlit */
 .login-box {
-    background: rgba(30, 41, 59, 0.75);
+    background-color: var(--secondary-background-color);
     padding: 3rem;
     border-radius: 16px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    border: 1px solid rgba(128, 128, 128, 0.2);
     max-width: 450px;
     margin: 50px auto;
     text-align: center;
-    backdrop-filter: blur(8px);
 }
 .stButton > button {
-    background: linear-gradient(90deg, #4f46e5 0%, #6366f1 100%) !important;
+    background: var(--primary-color) !important;
     color: white !important;
     border-radius: 8px !important;
     border: none !important;
@@ -45,24 +31,23 @@ h1, h2, h3, h4, p, span {
     font-weight: bold !important;
     font-size: 16px !important;
     transition: all 0.3s ease !important;
-    box-shadow: 0 4px 6px rgba(79, 70, 229, 0.3) !important;
 }
 .stButton > button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 15px rgba(79, 70, 229, 0.45) !important;
-    background: linear-gradient(90deg, #4338ca 0%, #4f46e5 100%) !important;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2) !important;
+    filter: brightness(1.1);
 }
 .stTextInput > div > div > input {
-    background-color: rgba(15, 23, 42, 0.6) !important;
-    color: white !important;
+    background-color: var(--secondary-background-color) !important;
+    color: var(--text-color) !important;
     border-radius: 8px !important;
-    border: 1px solid rgba(255,255,255,0.15) !important;
+    border: 1px solid rgba(128, 128, 128, 0.3) !important;
     padding: 10px 15px !important;
     font-size: 16px;
 }
 .stTextInput > div > div > input:focus {
-    border-color: #818cf8 !important;
-    box-shadow: 0 0 0 2px rgba(129, 140, 248, 0.2) !important;
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 2px rgba(128, 128, 128, 0.2) !important;
 }
 /* Customize tabs */
 .stTabs [data-baseweb="tab-list"] {
@@ -70,17 +55,17 @@ h1, h2, h3, h4, p, span {
     gap: 10px;
 }
 .stTabs [data-baseweb="tab"] {
-    background-color: rgba(30, 41, 59, 0.6);
+    background-color: var(--secondary-background-color);
     border-radius: 8px 8px 0px 0px;
     padding: 10px 20px;
-    border: 1px solid rgba(255,255,255,0.05);
+    border: 1px solid rgba(128, 128, 128, 0.2);
     border-bottom: none;
-    color: #cbd5e1;
+    color: var(--text-color);
 }
 .stTabs [aria-selected="true"] {
-    background-color: rgba(99, 102, 241, 0.2) !important;
-    color: white !important;
-    border-top: 2px solid #818cf8 !important;
+    background-color: transparent !important;
+    color: var(--text-color) !important;
+    border-top: 2px solid var(--primary-color) !important;
 }
 </style>
 """, unsafe_allow_html=True)
