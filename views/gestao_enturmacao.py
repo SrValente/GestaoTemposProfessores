@@ -96,29 +96,7 @@ def show():
                     dt_inicio = hoje.replace(day=1).strftime('%Y-%m-%dT00:00:00')
                     dt_fim = "2027-01-31T00:00:00"
 
-                    status.info("Passo 1/3: Criando vínculo do professor...")
-                    xml_pt = f"""
-                    <EduProfessorTurmaData>
-                      <SPROFESSORTURMA>
-                        <CODCOLIGADA>8</CODCOLIGADA>
-                        <IDPROFESSORTURMA>0</IDPROFESSORTURMA>
-                        <IDTURMADISC>{id_turma_disc}</IDTURMADISC>
-                        <CODPROF>{cod_prof_novo}</CODPROF>
-                        <DTINICIO>{dt_inicio}</DTINICIO>
-                        <DTFIM>{dt_fim}</DTFIM>
-                        <TIPOPROF>T</TIPOPROF>
-                        <STATUS>1</STATUS>
-                        <COMPOESALARIO>S</COMPOESALARIO>
-                      </SPROFESSORTURMA>
-                      <SPROFESSORTURMACOMPL>
-                        <CODCOLIGADA>8</CODCOLIGADA>
-                        <IDPROFESSORTURMA>0</IDPROFESSORTURMA>
-                      </SPROFESSORTURMACOMPL>
-                    </EduProfessorTurmaData>"""
-                    
-                    resp = soap_request("EduProfessorTurmaData", xml_pt)
-                    time.sleep(4) 
-
+                    status.info("Passo 1/3: Verificando se o professor já está na turma...")
                     df_vinculo = consultar_rm("SMP.0051", f"CODCOLIGADA=8;IDTURMADISC={id_turma_disc}")
                     id_pt_novo = None
                     if not df_vinculo.empty:
@@ -126,15 +104,52 @@ def show():
                         if not match.empty:
                             id_pt_novo = match.iloc[0]['IDPROFESSORTURMA']
 
+                    if not id_pt_novo:
+                        status.info("Criando novo vínculo do professor na turma...")
+                        xml_pt = f"""
+                        <EduProfessorTurmaData>
+                          <SPROFESSORTURMA>
+                            <CODCOLIGADA>8</CODCOLIGADA>
+                            <IDPROFESSORTURMA>0</IDPROFESSORTURMA>
+                            <IDTURMADISC>{id_turma_disc}</IDTURMADISC>
+                            <CODPROF>{cod_prof_novo}</CODPROF>
+                            <DTINICIO>{dt_inicio}</DTINICIO>
+                            <DTFIM>{dt_fim}</DTFIM>
+                            <TIPOPROF>T</TIPOPROF>
+                            <STATUS>1</STATUS>
+                            <COMPOESALARIO>S</COMPOESALARIO>
+                          </SPROFESSORTURMA>
+                          <SPROFESSORTURMACOMPL>
+                            <CODCOLIGADA>8</CODCOLIGADA>
+                            <IDPROFESSORTURMA>0</IDPROFESSORTURMA>
+                          </SPROFESSORTURMACOMPL>
+                        </EduProfessorTurmaData>"""
+                        
+                        resp = soap_request("EduProfessorTurmaData", xml_pt)
+                        time.sleep(4) 
+    
+                        df_vinculo = consultar_rm("SMP.0051", f"CODCOLIGADA=8;IDTURMADISC={id_turma_disc}")
+                        if not df_vinculo.empty:
+                            match = df_vinculo[df_vinculo['CODPROF'].astype(str) == str(cod_prof_novo)]
+                            if not match.empty:
+                                id_pt_novo = match.iloc[0]['IDPROFESSORTURMA']
+                    else:
+                        status.info("Professor já vinculado. Prosseguindo...")
+
                     if id_pt_novo:
                         status.success("Vínculo OK! Atualizando horários...")
                         p_bar = st.progress(0)
                         for i, (idx, row) in enumerate(selecionados.iterrows()):
                             id_h = df_grade.loc[idx, 'IDHORARIOTURMA']
-                            soap_request("EduHorarioProfessorData", f"<EduHorarioProfessor><SHorarioProfessor><CODCOLIGADA>8</CODCOLIGADA><IDPROFESSORTURMA>{id_pt_novo}</IDPROFESSORTURMA><IDHORARIOTURMA>{id_h}</IDHORARIOTURMA></SHorarioProfessor></EduHorarioProfessor>")
                             id_pt_velho = df_grade.loc[idx, 'IDPROFESSORTURMA']
-                            if pd.notnull(id_pt_velho) and str(id_pt_velho) != str(id_pt_novo):
-                                soap_request("EduHorarioProfessorData", f"<EduHorarioProfessor><SHorarioProfessor><CODCOLIGADA>8</CODCOLIGADA><IDPROFESSORTURMA>{id_pt_velho}</IDPROFESSORTURMA><IDHORARIOTURMA>{id_h}</IDHORARIOTURMA></SHorarioProfessor></EduHorarioProfessor>", "DeleteRecord")
+                            
+                            if pd.notnull(id_pt_velho) and str(id_pt_velho) == str(id_pt_novo):
+                                pass # O professor já está vinculado a este horário
+                            else:
+                                soap_request("EduHorarioProfessorData", f"<EduHorarioProfessor><SHorarioProfessor><CODCOLIGADA>8</CODCOLIGADA><IDPROFESSORTURMA>{id_pt_novo}</IDPROFESSORTURMA><IDHORARIOTURMA>{id_h}</IDHORARIOTURMA></SHorarioProfessor></EduHorarioProfessor>")
+                                if pd.notnull(id_pt_velho):
+                                    soap_request("EduHorarioProfessorData", f"<EduHorarioProfessor><SHorarioProfessor><CODCOLIGADA>8</CODCOLIGADA><IDPROFESSORTURMA>{id_pt_velho}</IDPROFESSORTURMA><IDHORARIOTURMA>{id_h}</IDHORARIOTURMA></SHorarioProfessor></EduHorarioProfessor>", "DeleteRecord")
+                                    
                             p_bar.progress((i + 1) / len(selecionados))
                         
                         st.success(f"✅ Professor {cod_prof_novo} enturmado com sucesso!")
